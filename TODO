@@ -9,5 +9,10 @@ Log.java:
 
 ClientMethods.java
 	Extract some methods to diffrent classes.
-	Make the GUI like:
-		
+	Make the GUI:
+	MenuBar[MENU, Tools, Ontop,Options]
+	 Applet[Runescape]
+	   MENU[About, End]
+	  Tools[Flipping panel, Timer]
+	  Ontop[jCheckBox.Name("Always on top most.")]
+	Options[Stuff]
