@@ -12,36 +12,26 @@ import java.util.regex.Pattern;
 
 public class ClientStub implements AppletStub {
 
-	public void setDocumentBase(URL documentBase) {
-		this.documentbase = documentBase;
+	public boolean active = false;
+
+	private Applet applet;
+
+	private URL codebase;
+
+	private URL documentbase;
+
+	private Map<String, String> params = new HashMap<String, String>();
+
+	public void appletResize(int width, int height) {
+
 	}
 
-	public void setCodeBase(URL codeBase) {
-		this.codebase = codeBase;
-	}
-
-	public boolean isActive() {
-		return isActive();
-	}
-
-	public URL getDocumentBase() {
-		return documentbase;
-	}
-
-	public URL getCodeBase() {
-		return codebase;
-	}
-
-	public String getParameter(String name) {
-		return params.get(name);
+	public Applet getApplet() {
+		return applet;
 	}
 
 	public AppletContext getAppletContext() {
 		return null;
-	}
-
-	public void appletResize(int width, int height) {
-
 	}
 
 	public AudioClip getAudioClip(final URL url) {
@@ -49,16 +39,19 @@ public class ClientStub implements AppletStub {
 		return null;
 	}
 
-	public Applet getApplet() {
-		return applet;
+	public URL getCodeBase() {
+		return codebase;
 	}
 
-	private Applet applet;
-	public boolean active = false;
-	private Map<String, String> params = new HashMap<String, String>();
-
-	private URL documentbase;
-	private URL codebase;
+	public URL getDocumentBase() {
+		return documentbase;
+	}
+	public String getParameter(String name) {
+		return params.get(name);
+	}
+	public boolean isActive() {
+		return isActive();
+	}
 
 	public void parsePARAMS(Pattern parameterPattern, String frameSource) {
 
@@ -71,9 +64,16 @@ public class ClientStub implements AppletStub {
 			params.put(key, value);
 		}
 	}
-
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public void setCodeBase(URL codeBase) {
+		this.codebase = codeBase;
+	}
+
+	public void setDocumentBase(URL documentBase) {
+		this.documentbase = documentBase;
 	}
 
 }

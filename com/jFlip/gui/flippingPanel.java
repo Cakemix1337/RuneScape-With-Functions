@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -44,10 +45,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
-import javax.swing.text.Document;
 
 import com.jFlip.classes.SpringUtilities;
-import com.jFlip.classes.autoCorrection.AutoCompleteDocument;
 import com.jFlip.classes.autoCorrection.CompletionService;
 
 public class flippingPanel extends JFrame implements ActionListener {
@@ -310,9 +309,9 @@ public class flippingPanel extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = -3784022200204468521L;
 
-	private static final boolean TRUE = true;
-
 	private static JTable table;
+
+	private static final boolean TRUE = true;
 
 	public static boolean isNumeric(String str) {
 		NumberFormat formatter = NumberFormat.getInstance();
@@ -321,24 +320,28 @@ public class flippingPanel extends JFrame implements ActionListener {
 		return str.length() == pos.getIndex();
 	}
 
-	public boolean itemIsloaded = false;
-
 	public static void main(String[] args) {
 		new flippingPanel();
 	}
 
 	private JButton addButton;
+
+	private JButton favButton;
+	public boolean itemIsloaded = false;
+
 	ArrayList<Items> items = new ArrayList<Items>();
+
+	private JButton jItems;
+
+	private FilteredJList list;
+
+	private List<String> listItems = null;
 
 	private NameService nameService;
 
 	private JButton removeButton;
 
 	private JButton saveButton;
-
-	private JButton favButton;
-
-	private JButton jItems;
 
 	public flippingPanel() {
 		setTitle("Flipping panel");
@@ -347,9 +350,14 @@ public class flippingPanel extends JFrame implements ActionListener {
 			@Override
 			public void run() {
 				try {
-					listItems = Files.readAllLines(
-							Paths.get("C:/Users/Pie/Desktop/Items3.txt"),
-							Charset.defaultCharset());
+					if (new File("Items.txt").exists())
+						listItems = Files.readAllLines(
+								Paths.get("C:/Users/Pie/Desktop/"),
+								Charset.defaultCharset());
+					else {
+						return; //TODO: Get that list when I get back from school.
+					}
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -417,9 +425,6 @@ public class flippingPanel extends JFrame implements ActionListener {
 		setLocationRelativeTo(getOwner());
 	}
 
-	private FilteredJList list;
-	private List<String> listItems = null;
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(addButton)) {
@@ -453,7 +458,8 @@ public class flippingPanel extends JFrame implements ActionListener {
 						public void valueChanged(ListSelectionEvent e) {
 							final int row = list.getSelectedIndex();
 							if (!e.getValueIsAdjusting()) {
-								Object selected_row = ((JList) e.getSource()).getSelectedValue();
+								Object selected_row = ((JList) e.getSource())
+										.getSelectedValue();
 								Item.setText(selected_row.toString());
 								frame.dispose();
 							}
@@ -474,14 +480,14 @@ public class flippingPanel extends JFrame implements ActionListener {
 			});
 			jPanel.add(jItems);
 			p.add(jPanel);
-/*
-			nameService = new NameService();
-
-			Document autoCompleteDocument = new AutoCompleteDocument(
-					nameService, Item);
-
-			Item.setDocument(autoCompleteDocument);
-*/
+			/*
+			 * nameService = new NameService();
+			 * 
+			 * Document autoCompleteDocument = new AutoCompleteDocument(
+			 * nameService, Item);
+			 * 
+			 * Item.setDocument(autoCompleteDocument);
+			 */
 			l = new JLabel("Buying price:", JLabel.TRAILING);
 			p.add(l);
 			final JTextField buyPrice = new JTextField(10);

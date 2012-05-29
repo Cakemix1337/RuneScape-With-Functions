@@ -14,11 +14,14 @@ import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.jFlip.classes.Functions;
 import com.jFlip.inc.Settings;
 
 public class RSApplet {
 
 	private Applet applet;
+
+	public String appletClass, archive, frameSource, GAMEPACK_JAR = "./gamepack.jar";
 
 	public Pattern PARAMETER_PATTERN = Pattern
 			.compile("<param name=\"([^\\s]+)\"\\s+value=\"([^>]*)\">"),
@@ -26,15 +29,13 @@ public class RSApplet {
 			ARCHIVE_PATTERN = Pattern.compile("archive=(.*) "),
 			SOURCE_PATTERN = Pattern.compile("src=\"(.*?)\" ");
 
-	public String appletClass, archive, frameSource, GAMEPACK_JAR = "./gamepack.jar";
-
 	public ClientStub stub;
 
 	public URL world;
 
 	public RSApplet() throws MalformedURLException, IOException,
 			InterruptedException {
-		String source = getPageSource(new URL(
+		String source =  Functions.getPageSource(new URL(
 				"http://www.runescape.com/game.ws?j=1"));
 		com.jFlip.inc.Settings.setStatus("Parsing the info.");
 
@@ -47,7 +48,7 @@ public class RSApplet {
 
 		if (matcher.find()) {
 			String match = matcher.group(1);
-			frameSource = getPageSource(new URL(match));
+			frameSource = Functions.getPageSource(new URL(match));
 			matcher = ARCHIVE_PATTERN.matcher(frameSource);
 			Matcher codeMatcher = CODE_PATTERN.matcher(frameSource);
 			if (matcher.find() && codeMatcher.find()) {
@@ -86,34 +87,6 @@ public class RSApplet {
 
 	}
 
-	private void setApplet(Applet Applet) {
-		this.applet = Applet;
-	}
-
-	public String getPageSource(URL url) throws IOException,
-			InterruptedException {
-		URLConnection uc = url.openConnection();
-		uc.addRequestProperty(
-				"Accept",
-				"text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
-		uc.addRequestProperty("Accept-Charset",
-				"ISO-8859-1,utf-8;q=0.7,*;q=0.7");
-		uc.addRequestProperty("Accept-Encoding", "gzip,deflate");
-		uc.addRequestProperty("Accept-Language", "en-gb,en;q=0.5");
-		uc.addRequestProperty("Connection", "keep-alive");
-		uc.addRequestProperty("Host", "www.runescape.com");
-		uc.addRequestProperty("Keep-Alive", "300");
-		uc.addRequestProperty(
-				"User-Agent",
-				"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.0.6) Gecko/20060728 Firefox/1.5.0.6");
-
-		DataInputStream di = new DataInputStream(uc.getInputStream());
-		byte[] tmp = new byte[uc.getContentLength()];
-		di.readFully(tmp);
-		di.close();
-		return new String(tmp);
-	}
-
 	public void Download(String world, String archive) throws Exception {
 		URLConnection jarConnection = new URL(world + archive).openConnection();
 		FileOutputStream out = new FileOutputStream(GAMEPACK_JAR);
@@ -130,6 +103,9 @@ public class RSApplet {
 	 */
 	public Applet getApplet() {
 		return applet;
+	}
+	private void setApplet(Applet Applet) {
+		this.applet = Applet;
 	}
 
 }

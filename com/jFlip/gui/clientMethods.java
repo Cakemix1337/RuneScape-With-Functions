@@ -9,16 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 
-import javax.swing.AbstractButton;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -28,12 +25,12 @@ import com.jFlip.inc.Settings;
 public class clientMethods {
 
 	private Applet applet;
-	private JFrame frame = new JFrame();
-	private JLabel lABEL_status;
-	private JPanel tools;
 	private JButton btnFlippingPanel;
 	private JButton btnOtherTools;
 	private flippingPanel f = new flippingPanel();
+	private JFrame frame = new JFrame();
+	private JLabel lABEL_status;
+	private JPanel tools;
 
 	public void centreWindow(Window frame) {
 		Log.debug("Call method centreWindow("
@@ -53,26 +50,6 @@ public class clientMethods {
 
 	public JFrame getFrame() {
 		return frame;
-	}
-
-	public void toolGap(int width) {
-		tools.add(Box.createHorizontalStrut(width));
-	}
-
-	public void initClient() {
-		if (applet == null)
-			throw new IllegalArgumentException("applet == null.");
-
-		frame.setResizable(true);
-		frame.setAlwaysOnTop(false);
-
-		lABEL_status.setVisible(false);
-
-		getTool();
-
-		pack();
-		centreWindow(frame);
-		getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
 	public JPanel getTool() {
@@ -119,11 +96,34 @@ public class clientMethods {
 		return tools;
 	}
 
+	public void initApplet() {
+		applet.init();
+		applet.start();
+		applet.setPreferredSize(new Dimension(769, 504));
+	}
+
+	public void initClient() {
+		if (applet == null)
+			throw new IllegalArgumentException("applet == null.");
+
+		frame.setResizable(true);
+		frame.setAlwaysOnTop(false);
+
+		lABEL_status.setVisible(false);
+
+		getTool();
+
+		pack();
+		centreWindow(frame);
+		getFrame().setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+
 	public void initLoader(String Name) {
 		getFrame().addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// Won't exit if you close it so only one way to go it seems.
 				//TODO: Add save.
+				System.out.println("Ending application.");
 				System.exit(0);
 			}
 		}
@@ -161,6 +161,10 @@ public class clientMethods {
 
 	public void setApplet(Applet applet) {
 		this.applet = applet;
+	}
+
+	public void toolGap(int width) {
+		tools.add(Box.createHorizontalStrut(width));
 	}
 
 	public void visualLoader() {
@@ -206,13 +210,7 @@ public class clientMethods {
 			} catch (Exception e) {
 			}
 
-		} while (Settings.isShowLoader());
-	}
-
-	public void initApplet() {
-		applet.init();
-		applet.start();
-		applet.setPreferredSize(new Dimension(769, 504));
+		} while (Settings.getBoolean("showLoader"));
 	}
 
 	//

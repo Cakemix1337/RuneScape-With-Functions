@@ -35,7 +35,7 @@ public class Client extends JFrame {
 			e.printStackTrace();
 		}
 
-		Settings.setShowLoader(false);
+		Settings.setBoolean("showLoader",false);
 
 		methods.initApplet();
 

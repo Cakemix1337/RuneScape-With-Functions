@@ -1,14 +1,12 @@
 package com.jFlip;
 
 import com.jFlip.classes.Log;
-import com.jFlip.classes.checkForUpdates;
 import com.jFlip.gui.Client;
-import com.jFlip.inc.Settings;
 
 public class startClient {
 	public static void main(String[] args) throws Exception {
 
-	//	new checkForUpdates();
+		// new checkForUpdates();
 
 		Log.init();
 

@@ -7,11 +7,11 @@ public class Graph {
 	// http://www.runescape.com/a=135/js/itemdb/runescape/modules/graph/graph-53.js
 	// http://services.runescape.com/m=itemdb_rs/a=135/api/graph/1517.json
 
-	public Image getWeek() {
+	public Image getMonth() {
 		return null;
 	}
 
-	public Image getMonth() {
+	public Image getWeek() {
 		return null;
 	}
 
