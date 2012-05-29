@@ -1,0 +1,13 @@
+checkForUpdates.java:
+	Make the function.
+					  
+Log.java:
+	Make formats:
+		Debug: Color.CYAN ("[DEBUG] [Time] [Method] ([File]:[Line]) - [Message]")
+		 Info: Color.NORMAL ("[INFO] [Time] [Message]")
+		Error: Color.RED ("[ERROR] [Time] [Class]:[Line] - Message")
+
+ClientMethods.java
+	Extract some methods to diffrent classes.
+	Make the GUI like:
+		
