@@ -1,5 +1,7 @@
 RuneScape With Functions
 ===================
+Info
+----
 A Runescape client implemented with functions.
 
 Requirements
