@@ -6,12 +6,21 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.jFlip.classes.Languages;
+import com.jFlip.classes.Log;
+
 public class Settings {
 	private static boolean debug = false;
 	private static Map<String, Boolean> Booleans = new HashMap<String, Boolean>() {
+		private static final long serialVersionUID = 1L;
+
 		{
-			put("showLoader", true);
+			put("foundUpdate", false); 
+			put("forceUpdate", false); 
+			put("showLoader", true); 
 			put("showFlipping", true);
+			put("check_New_Version", true);
+			put("Debug", true); 
 		}
 	};
 
@@ -20,14 +29,13 @@ public class Settings {
 
 		{
 			// GUI
-			String name = "Client";
-			String title = "jFlip (v".concat(
-					Versions.GUI.concat(Versions.GUI_STATE)).concat(")");
+			String name = "Client"; //$NON-NLS-1$
+			String title = Languages.getString("Settings.Title_jFlip").concat(" (v )"); //$NON-NLS-1$ //$NON-NLS-2$
 			put(name, title);
 
 			// Flipping Panel
-			name = "flippingPanel";
-			title = "Flipping panel ";
+			name = "flippingPanel"; //$NON-NLS-1$
+			title = Languages.getString("Settings.Title_Flipping_panel"); //$NON-NLS-1$
 			put(name, title);
 		}
 	};
@@ -35,8 +43,9 @@ public class Settings {
 	private static Point lastGlocation;
 	private static Dimension lastGsize;
 	private static long mili = Calendar.getInstance().getTimeInMillis();
-
-	private static String status = "";
+	private static String downloadLink = ""; 
+	private static String Note = ""; 
+	private static String status = ""; 
 
 	public static String getGuiTitle(String Name) {
 		return guiTitles.get(Name);
@@ -87,15 +96,33 @@ public class Settings {
 	}
 
 	public static Boolean getBoolean(String Name) {
+		Log.debug(Name + " - " + Booleans.get(Name), false); 
 		return Booleans.get(Name);
+	}
+
+	public static void setBoolean(String str, boolean bool) {
+		Log.debug(str + " - " + bool, false); 
+		Booleans.put(str, bool);
 	}
 
 	public static void setBooleans(Map<String, Boolean> booleans) {
 		Booleans = booleans;
 	}
 
-	public static void setBoolean(String str, boolean bool) {
-		Booleans.put(str, bool);
+	public static String getDownloadLink() {
+		return downloadLink;
+	}
+
+	public static void setDownloadLink(String downloadLink) {
+		Settings.downloadLink = downloadLink;
+	}
+
+	public static String getNote() {
+		return Note;
+	}
+
+	public static void setNote(String note) {
+		Note = note;
 	}
 
 }

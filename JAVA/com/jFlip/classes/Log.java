@@ -14,23 +14,34 @@ public class Log {
 
 	private static String logUID = null;
 
+	private static String lastMessage = "";
+
 	public static void debug(String message) {
+		debug(message, true);
+	}
+
+	public static void debug(String message, Boolean printStack) {
 		if (!isDebug())
 			return;
+		
+		String m = message;
+		
+		if (printStack) {
+			final StackTraceElement methodCaller = new Throwable()
+					.getStackTrace()[1];
 
-		final StackTraceElement methodCaller = new Throwable().getStackTrace()[1];
-
-		String m = methodCaller.getClassName().substring(
-				methodCaller.getClassName().lastIndexOf(".") + 1);
-		m += " - ";
-		m += methodCaller.getMethodName();
-		m += " [";
-		m += methodCaller.getFileName();
-		m += ":";
-		m += methodCaller.getLineNumber();
-		m += "]";
-
-		log(message, m);
+			m = methodCaller.getClassName().substring(
+					methodCaller.getClassName().lastIndexOf(".") + 1);
+			m += " - ";
+			m += methodCaller.getMethodName();
+			m += " [";
+			m += methodCaller.getFileName();
+			m += ":";
+			m += methodCaller.getLineNumber();
+			m += "]";
+		}
+		
+		log(m);
 	}
 
 	public static void error(String message) {
@@ -68,10 +79,18 @@ public class Log {
 	}
 
 	private static void log(String message, Boolean Error) {
+		if (logUID == null)
+			init();
+
 		PrintStream k = Error ? System.err : System.out;
-
-		k.println(message);
-
+		if (!lastMessage.equalsIgnoreCase(new String(message))) {
+			k.println();
+			k.println(message);
+			lastMessage = message;
+		} else { // Hate getting spammed with lines makes the debugging harder
+					// as you have to scroll up.
+			k.print("+");
+		}
 		message += "\n";
 		try {
 			FileUtil.appendString(new File(logUID), message);
@@ -83,6 +102,7 @@ public class Log {
 	private static void log(String message, String caller) {
 		log(caller + " - " + message);
 	}
+
 	public static void setDebug(boolean debug) {
 		Debug = debug;
 	}

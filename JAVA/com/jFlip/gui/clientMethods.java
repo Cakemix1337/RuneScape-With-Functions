@@ -2,11 +2,15 @@ package com.jFlip.gui;
 
 import java.applet.Applet;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -14,15 +18,20 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingConstants;
 
 import com.jFlip.classes.Log;
 import com.jFlip.inc.Settings;
 
-public class clientMethods {
+public class clientMethods implements ActionListener {
 
 	private Applet applet;
 	private JButton btnFlippingPanel;
@@ -31,10 +40,10 @@ public class clientMethods {
 	private JFrame frame = new JFrame();
 	private JLabel lABEL_status;
 	private JPanel tools;
+	private flippingPanel flip;
 
 	public void centreWindow(Window frame) {
-		Log.debug("Call method centreWindow("
-				+ frame.getClass().getSimpleName() + ")");
+		Log.debug("Call method centreWindow(" + frame.getClass().getSimpleName() + ")");
 		Dimension area = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (int) ((area.getWidth() - frame.getWidth()) / 2);
 		int y = (int) ((area.getHeight() - frame.getHeight()) / 2);
@@ -52,42 +61,58 @@ public class clientMethods {
 		return frame;
 	}
 
+	public JMenuBar createMenuBar() {
+		JMenuBar menuBar;
+		JMenu menu;
+		JMenuItem menuItem;
+		JCheckBoxMenuItem cbMenuItem;
+
+		// Create the menu bar.
+		menuBar = new JMenuBar();
+
+		// Build the first menu.
+		menu = new JMenu("Menu");
+		menuBar.add(menu);
+
+		// a group of JMenuItems
+		menuItem = new JMenuItem("About");
+		menuItem.addActionListener(this);
+		menu.add(menuItem);
+
+		menu.addSeparator();
+
+		menuItem = new JMenuItem("Exit");
+		menuItem.addActionListener(this);
+		menu.add(menuItem);
+
+		// Build second menu in the menu bar.
+		menu = new JMenu("Tools");
+		menuItem = new JMenuItem("Flipping panel");
+		menuItem.addActionListener(this);
+		menu.add(menuItem);
+
+		menuItem = new JMenuItem("Timers");
+		menuItem.addActionListener(this);
+		menu.add(menuItem);
+
+		menuBar.add(menu);
+		menuBar.add(Box.createHorizontalGlue());
+
+		menu = new JMenu("Options");
+		cbMenuItem = new JCheckBoxMenuItem("Always on top");
+		cbMenuItem.addActionListener(this);
+		menu.add(cbMenuItem);
+
+		menuBar.add(menu);
+		return menuBar;
+	}
+
 	public JPanel getTool() {
 		tools = new JPanel();
 
 		tools.setLayout(new BoxLayout(tools, BoxLayout.X_AXIS));
 
-		btnFlippingPanel = new JButton("Flipping Panel");
-		btnOtherTools = new JButton("Other tools");
-
-		JButton btnOptions = new JButton("Options");
-
-		tools.add(btnFlippingPanel);
-
-		toolGap(2);
-
-		btnFlippingPanel.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				f.setVisible(!f.isVisible());
-			}
-		});
-
-		tools.add(btnOtherTools);
-
-		tools.add(Box.createHorizontalGlue());
-
-		JCheckBox onTopMost = new JCheckBox("Always On Top Most");
-		onTopMost.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				getFrame().setAlwaysOnTop(!getFrame().isAlwaysOnTop());
-			}
-		});
-		tools.add(onTopMost);
-		tools.add(btnOptions);
+		tools.add(createMenuBar());
 
 		getFrame().getContentPane().add(applet, BorderLayout.CENTER);
 
@@ -103,8 +128,7 @@ public class clientMethods {
 	}
 
 	public void initClient() {
-		if (applet == null)
-			throw new IllegalArgumentException("applet == null.");
+		if (applet == null) throw new IllegalArgumentException("applet == null.");
 
 		frame.setResizable(true);
 		frame.setAlwaysOnTop(false);
@@ -112,6 +136,8 @@ public class clientMethods {
 		lABEL_status.setVisible(false);
 
 		getTool();
+
+		flip = new flippingPanel();
 
 		pack();
 		centreWindow(frame);
@@ -122,21 +148,19 @@ public class clientMethods {
 		getFrame().addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// Won't exit if you close it so only one way to go it seems.
-				//TODO: Add save.
+				// TODO: Add save.
 				System.out.println("Ending application.");
 				System.exit(0);
 			}
 		}
 
 		);
-		Log.debug("Set title [" + Settings.getGuiTitle(Name)
-				+ "]; AlwaysOnTop [TRUE]; setResizable [FALSE]");
+
 		getFrame().setTitle(Settings.getGuiTitle(Name));
 		getFrame().setAlwaysOnTop(true);
 		getFrame().setResizable(false);
 
-		lABEL_status = new JLabel(
-				"<HTML><center><br />Loading up.<br /><br /></center></html>");
+		lABEL_status = new JLabel("<HTML><center><br />Loading up.<br /><br /></center></html>");
 		lABEL_status.setHorizontalAlignment(SwingConstants.CENTER);
 		getFrame().getContentPane().add(lABEL_status, BorderLayout.CENTER);
 
@@ -192,13 +216,10 @@ public class clientMethods {
 			String out = "[";
 			out += amountString.substring(0, x % amountString.length());
 			out += "|";
-			out += amountString
-					.substring(0, amount - x % amountString.length()).replace(
-							String.valueOf(Char), String.valueOf(Replace));
+			out += amountString.substring(0, amount - x % amountString.length()).replace(String.valueOf(Char), String.valueOf(Replace));
 			out += "]";
 
-			lABEL_status.setText("<html><center>" + Settings.getStatus()
-					+ "<br/>" + out + "</html>");
+			lABEL_status.setText("<html><center>" + Settings.getStatus() + "<br/>" + out + "</html>");
 			if (x >= amount) {
 				reverse = false;
 			} else if (x < whenToReverse) {
@@ -213,51 +234,21 @@ public class clientMethods {
 		} while (Settings.getBoolean("showLoader"));
 	}
 
-	//
-	// f = new flippinGUI();
-	//
-	// f.setSize(f.getSize().width, g.getSize().height - 15);
-	// f.setLocation(g.getLocation().x + g.getSize().width + 15,
-	// g.getLocation().y + 13);
-	//
-	// g.setOntop(false);
-	// g.setResizable(true);
-	// Runnable run1 = new Runnable() {
-	// @Override
-	// public void run() {
-	// while (g.isVisible()) {
-	// if (f.isVisible()) {
-	//
-	// if (!g.getLocation().equals(lastGlocation)
-	// || !g.getSize().equals(lastGlocation)) {
-	// f.setSize(f.getSize().width,
-	// g.getSize().height - 15);
-	// f.setLocation(g.getLocation().x + g.getSize().width
-	// + 15, g.getLocation().y + (int) 7.5);
-	// f.setPreferredSize(new Dimension(f.getSize().width,
-	// g.getSize().height - 15));
-	// f.pack();
-	// lastGlocation = g.getLocation();
-	// lastGsize = g.getSize();
-	// }
-	// }
-	//
-	// if (g.showFlippingPanel != f.isVisible()) {
-	// System.out.println("Turning "
-	// + (g.showFlippingPanel ? "on" : "off")
-	// + " the flipping panel.");
-	// f.setVisible(g.showFlippingPanel);
-	// showFlippingPanel = g.showFlippingPanel;
-	// }
-	//
-	// try {
-	// Thread.sleep(350);
-	// } catch (InterruptedException e) {
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-	// };
-	// Thread mouseChanges = new Thread(run1);
-	// mouseChanges.start();
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		JMenuItem source = (JMenuItem) (e.getSource());
+		switch (source.getText()) {
+		case "Always on top":
+			frame.setAlwaysOnTop(!frame.isAlwaysOnTop());
+			break;
+		case "Flipping panel":
+			flip.setVisible(!flip.isVisible());
+			break;
+		case "About":
+			System.out.println("k");
+			break;
+		}
+
+	}
+
 }

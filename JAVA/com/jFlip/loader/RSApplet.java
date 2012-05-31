@@ -15,19 +15,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jFlip.classes.Functions;
+import com.jFlip.classes.Languages;
 import com.jFlip.inc.Settings;
 
 public class RSApplet {
 
 	private Applet applet;
 
-	public String appletClass, archive, frameSource, GAMEPACK_JAR = "./gamepack.jar";
+	public String appletClass, archive, frameSource, GAMEPACK_JAR = Languages.getString("RSApplet.GAMEPACK_SAVE"); //$NON-NLS-1$
 
 	public Pattern PARAMETER_PATTERN = Pattern
-			.compile("<param name=\"([^\\s]+)\"\\s+value=\"([^>]*)\">"),
-			CODE_PATTERN = Pattern.compile("code=(.*) "),
-			ARCHIVE_PATTERN = Pattern.compile("archive=(.*) "),
-			SOURCE_PATTERN = Pattern.compile("src=\"(.*?)\" ");
+			.compile(Languages.getString("RSApplet.PARAMETER_PATTERN")), //$NON-NLS-1$
+			CODE_PATTERN = Pattern.compile(Languages.getString("RSApplet.CODE_PATTERN")), //$NON-NLS-1$
+			ARCHIVE_PATTERN = Pattern.compile(Languages.getString("RSApplet.ARCHIVE_PATTERN")), //$NON-NLS-1$
+			SOURCE_PATTERN = Pattern.compile(Languages.getString("RSApplet.SOURCE_PATTERN")); //$NON-NLS-1$
 
 	public ClientStub stub;
 
@@ -36,11 +37,11 @@ public class RSApplet {
 	public RSApplet() throws MalformedURLException, IOException,
 			InterruptedException {
 		String source =  Functions.getPageSource(new URL(
-				"http://www.runescape.com/game.ws?j=1"));
-		com.jFlip.inc.Settings.setStatus("Parsing the info.");
+				Languages.getString("RSApplet.DOWNLOAD_URL"))); //$NON-NLS-1$
+		com.jFlip.inc.Settings.setStatus(Languages.getString("RSApplet.STRING_STATUS_Parsing_the_info.")); //$NON-NLS-1$
 
 		if (source == null) {
-			Settings.setStatus("Error, could not download.");
+			Settings.setStatus(Languages.getString("RSApplet.STRING_STATUS_Error_Could_Not_download.")); //$NON-NLS-1$
 			return;
 		}
 
@@ -61,11 +62,11 @@ public class RSApplet {
 					stub.setDocumentBase(world);
 					archive = matcher.group(1);
 					
-					Settings.setStatus("Downloading the<br /> gamepack.jar.");
+					Settings.setStatus(Languages.getString("RSApplet.STRING_STATUS_Downloading_The_Gamepack")); //$NON-NLS-1$
 
 					Download(world.toString() + "/", archive);
 
-					Settings.setStatus("Download finished.<br />Parsing applet...");
+					Settings.setStatus(Languages.getString("RSApplet.STRING_STATUS_Download_finished_parsing_applet...")); //$NON-NLS-1$
 
 					{
 						/** Applet stuff **/

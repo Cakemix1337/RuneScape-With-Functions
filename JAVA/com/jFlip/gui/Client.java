@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import javax.swing.JFrame;
 
+import com.jFlip.classes.Languages;
 import com.jFlip.classes.Log;
 import com.jFlip.inc.Settings;
 import com.jFlip.loader.RSApplet;
@@ -14,10 +15,9 @@ public class Client extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private clientMethods methods;
 
-	public Client() throws MalformedURLException, IOException,
-			InterruptedException {
+	public Client() throws MalformedURLException, IOException, InterruptedException {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
+
 		methods = new clientMethods();
 
 		methods.initLoader(Client.class.getSimpleName());
@@ -35,17 +35,15 @@ public class Client extends JFrame {
 			e.printStackTrace();
 		}
 
-		Settings.setBoolean("showLoader",false);
+		Settings.setBoolean("showLoader", false); 
 
 		methods.initApplet();
 
 		methods.initClient();
-		
+
 		methods.pack();
 
-		Log.info("Client took "
-				+ ((Calendar.getInstance().getTimeInMillis() - Settings
-						.getMili()) / 1000) + " seconds to start up.");
+		Log.info(Languages.getString("Client.Client_Took").replace("$1", String.valueOf((Calendar.getInstance().getTimeInMillis() - Settings.getMili()) / 1000))); //$NON-NLS-1$
 	}
 
 }

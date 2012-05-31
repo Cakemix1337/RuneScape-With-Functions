@@ -47,7 +47,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import com.jFlip.classes.SpringUtilities;
-import com.jFlip.classes.autoCorrection.CompletionService;
 
 public class flippingPanel extends JFrame implements ActionListener {
 	public class Items {
@@ -89,52 +88,6 @@ public class flippingPanel extends JFrame implements ActionListener {
 
 		public void setSelling(int selling) {
 			this.selling = selling;
-		}
-
-	}
-
-	private static class NameService implements CompletionService<String> {
-
-		/** Our name data. */
-		private List<String> data;
-
-		/**
-		 * Create a new <code>NameService</code> and populate it.
-		 */
-		public NameService() {
-			try {
-				data = Files.readAllLines(
-						Paths.get("C:/Users/Pie/Desktop/fixed.txt"),
-						Charset.defaultCharset());
-			} catch (IOException | SecurityException e) {
-			}
-
-		}
-
-		/** {@inheritDoc} */
-		public String autoComplete(String startsWith) {
-			String hit = null;
-			for (String o : data) {
-				if (o.toLowerCase().startsWith(startsWith.toLowerCase())) {
-					if (hit == null) {
-						hit = o;
-					} else {
-						hit = null;
-						break;
-					}
-				}
-			}
-			return hit;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public String toString() {
-			StringBuilder b = new StringBuilder();
-			for (String o : data) {
-				b.append(o).append("\n");
-			}
-			return b.toString();
 		}
 
 	}
@@ -337,8 +290,6 @@ public class flippingPanel extends JFrame implements ActionListener {
 
 	private List<String> listItems = null;
 
-	private NameService nameService;
-
 	private JButton removeButton;
 
 	private JButton saveButton;
@@ -352,7 +303,7 @@ public class flippingPanel extends JFrame implements ActionListener {
 				try {
 					if (new File("Items.txt").exists())
 						listItems = Files.readAllLines(
-								Paths.get("C:/Users/Pie/Desktop/"),
+								Paths.get("C:/Users/Pie/Desktop/Items.txt"), //Damn it, forgot the items.txt back 13 miles at home...
 								Charset.defaultCharset());
 					else {
 						return; //TODO: Get that list when I get back from school.
